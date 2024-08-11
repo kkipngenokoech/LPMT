@@ -1,4 +1,6 @@
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class Admin {
     public void CreateUser() throws IOException, InterruptedException{
@@ -35,7 +37,7 @@ public class Admin {
         System.out.println(Design.createBorder(50));
         System.out.print(Design.formatMessage("Exporting data analytics", Design.YELLOW_COLOR));
         printLoadingDots(2);
-        String[] command ={"./usermanagement.sh", "exportDataAnalytics"};
+        String[] command ={"./usermanagement.sh", "exportUserData"};
         String output = LPMT.executeCommand(command);
         System.out.println(Design.padMessage(Design.formatMessage("LPMT analytics exported successfully", Design.GREEN_COLOR), 50));
     }
@@ -49,10 +51,64 @@ public class Admin {
         System.out.println(Design.createBorder(50));  
         System.out.print(Design.formatMessage("Exporting patient data", Design.YELLOW_COLOR));
         printLoadingDots(2); 
-        String[] command ={"./usermanagement.sh", "exportUserData"};
+        String[] commandGetUserData = {"./usermanagement.sh", "getUsersData"};
+        String outputGetUserData = LPMT.executeCommand(commandGetUserData);
+        double lpmtTotal = 0.00;
+        double lpmtAverage = 0.00;
+        int count = 0;
+        // I want to find the number of patients per country so I need a sort of dictionary of 
+        ArrayList<Integer> lpmtArray = new ArrayList<>();
+        for (String line : outputGetUserData.split("\n")) {
+            String[] parts = line.split(":");
+            if (parts.length != 18) {
+                continue;
+            }
+            // String uuid = parts[0];
+            // String username = parts [1];
+            // char[] password = parts[2].toCharArray();
+            // String firstName = parts[4];
+            // String lastName = parts[5];
+            // String email = parts[6];
+            String doi = parts[7]+":"+parts[8]+":"+parts[9];
+            boolean onMedication = Boolean.parseBoolean(parts[10]);
+            String soi = parts[11]+":"+parts[12]+":"+parts[13];
+            String dob = parts[14]+":"+parts[15]+":"+parts[16];
+            String country = parts[17];
+            int lpmt = Patient.calculateLPMT(country, doi, soi, onMedication, dob);
+            lpmtArray.add(lpmt);
+            lpmtTotal += (double)lpmt;
+            count += 1;
+        };
+        lpmtAverage = lpmtTotal/ count;
+        Collections.sort(lpmtArray);
+        double lpmtMedian;
+        if (lpmtArray.size() % 2 == 0){
+            lpmtMedian = ((double) lpmtArray.get(lpmtArray.size() / 2 - 1) + lpmtArray.get(lpmtArray.size() / 2)) / 2;     
+           } else {
+            lpmtMedian = (double) lpmtArray.get(lpmtArray.size() / 2);
+        }
+        double p25 = calculatePercentile(lpmtArray, 25);
+        double p50 = calculatePercentile(lpmtArray, 50);
+        double p75 = calculatePercentile(lpmtArray, 75);
+        String[] command ={"./usermanagement.sh", "exportDataAnalytics" , Double.toString(lpmtAverage), Double.toString(lpmtMedian), Double.toString(p25), Double.toString(p50), Double.toString(p75)};
         String output = LPMT.executeCommand(command);
         System.out.println(Design.padMessage(Design.formatMessage("LPMT patient data exported successfully", Design.GREEN_COLOR), 50));
     }
+
+    public double calculatePercentile(ArrayList<Integer> sortedList, double percentile) {
+        int size = sortedList.size();
+        double index = (percentile / 100.0) * (size - 1);
+        int lowerIndex = (int) Math.floor(index);
+        int upperIndex = (int) Math.ceil(index);
+        if (lowerIndex == upperIndex) {
+            return sortedList.get(lowerIndex);
+        } else {
+            double lowerValue = sortedList.get(lowerIndex);
+            double upperValue = sortedList.get(upperIndex);
+            return lowerValue + (upperValue - lowerValue) * (index - lowerIndex);
+        }
+    }
+    
     public void callAdminMenu() throws IOException, InterruptedException{
         boolean exit = false;
         while(!exit){
@@ -86,10 +142,10 @@ public class Admin {
                     CreateUser();
                     break;
                 case 2:
-                    exportUserData();
-                    break;
-                case 3:
                     ExportUserData();
+                break;
+                case 3:
+                    exportUserData();
                     break;
                 case 4:
                     exit=true;

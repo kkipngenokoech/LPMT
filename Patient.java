@@ -302,6 +302,7 @@ public class Patient{
     }
     public int calculateLPMT() throws IOException, InterruptedException {
         // Define average lifespan per country in years, i have it in a .csv file
+
         int lifeExpectancyForYourCountry = getCountryLifeExpectancy(country);
         
         // to calculate age current - dob
@@ -342,12 +343,72 @@ public class Patient{
         return remainingLifespan;
     }
 
-    public int getCountryLifeExpectancy(String country) throws IOException, InterruptedException {
+    public static int getCountryLifeExpectancy(String country) throws IOException, InterruptedException {
         // Define average lifespan per country in years, i have it in a .csv file
         String[] command = {"./usermanagement.sh", "getCountryLifeExpectancy", country};
-        String output = LPMT.executeCommand(command);
-        double lifeExpectancy = Double.parseDouble(output);
-        return (int) Math.round(lifeExpectancy);
+        try {
+            String output = LPMT.executeCommand(command);
+            double lifeExpectancy = Double.parseDouble(output);
+            return (int) Math.round(lifeExpectancy);
+        } catch (Exception e) {
+            return 70;
+        }
+    }
+
+    public static int calculateLPMT(String country, String infectionYearDate, String startDateOfMedicationYear, boolean onMedication, String dob) throws IOException, InterruptedException {
+        // Define average lifespan per country in years, i have it in a .csv file
+        // convert the strings to date objects
+        infectionYearDate = infectionYearDate.replaceAll("\\s+", " ");
+        startDateOfMedicationYear = startDateOfMedicationYear.replaceAll("\\s+", " ");
+        dob = dob.replaceAll("\\s+", " ");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
+        Date dateofinfection = null;
+        Date starDateofMedication = null;
+        Date dobDate = null;
+        try {
+            dateofinfection = dateFormat.parse(infectionYearDate);
+            starDateofMedication = startDateOfMedicationYear.equals("null") ? null : dateFormat.parse(startDateOfMedicationYear);
+            dobDate = dateFormat.parse(dob);
+        } catch (ParseException e) {
+            System.out.println("An error occurred while parsing the date strings.");
+            e.printStackTrace();
+        }
+        int lifeExpectancyForYourCountry = getCountryLifeExpectancy(country);        
+        // to calculate age current - dob
+        Calendar dobCalendar = Calendar.getInstance();
+        dobCalendar.setTime(dobDate);
+        int birthYear = dobCalendar.get(Calendar.YEAR);
+
+        Calendar currentCalendar = Calendar.getInstance();
+        int currentYear = currentCalendar.get(Calendar.YEAR);
+
+        int age = currentYear - birthYear;
+        // to calculate years delayed: start date of medication - date of infection
+        Calendar startDateOfMedicationCalendar = Calendar.getInstance();
+        startDateOfMedicationCalendar.setTime(starDateofMedication);
+        int startYear = startDateOfMedicationCalendar.get(Calendar.YEAR);
+        Calendar dateOfInfectionCalendar = Calendar.getInstance();
+        dateOfInfectionCalendar.setTime(dateofinfection);
+        int infectionYear = dateOfInfectionCalendar.get(Calendar.YEAR);
+        int yearsDelayed = startYear - infectionYear;
+        // Retrieve the average lifespan for the patient's country
+
+        // Calculate the initial remaining lifespan
+        int remainingLifespan = lifeExpectancyForYourCountry - age;
+        // Adjust remaining lifespan based on ART status and delay
+        if (!onMedication) {
+            remainingLifespan = 5 - yearsDelayed; // Patient will die in the 5th year if not on ART drugs
+        } else {
+            // Calculate the remaining lifespan considering the delay in starting ART drugs
+            for (int i = 0; i < yearsDelayed; i++) {
+                remainingLifespan *= 0.9; // Reduce by 10% for each year delayed
+            }
+        }
+
+        // Round up to the next full year and if it is less than zero set it to zero
+        remainingLifespan = Math.max(0, remainingLifespan);
+        // Print the calculated remaining lifespan
+        return remainingLifespan;
     }
 
 }

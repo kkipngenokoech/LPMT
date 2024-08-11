@@ -195,7 +195,7 @@ exportUserData(){
     local userFile="user.txt"  # Assuming userFile is defined somewhere in your script
     echo "Exporting user data..."
     # Echo the headers to the text file
-    echo "UUID,Username,Password,Role,FirstName,LastName,Email,DateOfInfection,OnMedication,StartDateOfMedication,DOB,Country,Timezone" > "$patientfile"
+    echo "UUID,Username,Password,Role,FirstName,LastName,Email,DateOfInfection,OnMedication,StartDateOfMedication,DOB,Country" > "$patientfile"
 
     # Read each line from userFile
     while IFS= read -r line; do
@@ -213,12 +213,32 @@ exportUserData(){
         dob=$(echo "$line" | cut -d':' -f15-17)  # Extract dob with two colons
         country=$(echo "$line" | cut -d':' -f18)
         # Reconstruct the line with commas, preserving the timezone field
-        echo "$uuid,$username,$password,$role,$firstName,$lastName,$email,$dateofinfection,$onMedication,$starDateofMedication,$dob,$country,$timezone" >> "$patientfile"
+        echo "$uuid,$username,$password,$role,$firstName,$lastName,$email,$dateofinfection,$onMedication,$starDateofMedication,$dob,$country" >> "$patientfile"
     done < "$userFile"
 }
 exportDataAnalytics(){
     local dataAnalyticsfile="dataanalytics.csv"
-    touch "$dataAnalyticsfile"
+    local patientsdataFile="patientdata.csv"
+    local lpmtAverage=$2
+    local lpmtMedian=$3
+    local percintile25=$4
+    local percintile50=$5
+    local percintile75=$6
+
+    echo "LPMT Average,LPMT Median,25th Percentile,50th Percentile,75th Percentile" > "$dataAnalyticsfile"
+    echo "$lpmtAverage,$lpmtMedian,$percintile25,$percintile50,$percintile75" >> "$dataAnalyticsfile"
+
+    
+    # Calculate the average life expectancy of patients
+    # Calculate the average number of patients per country
+    # Calculate the average number of patients on medication
+    # Calculate the average number of patients not on medication
+
+}
+
+getUsersData(){
+    local userFile="user.txt"
+    cat "$userFile"
 }
 
 getCountryLifeExpectancy(){
@@ -228,7 +248,7 @@ getCountryLifeExpectancy(){
     lifeExpectancy=$(awk -F',' -v country="$country" '$1 == country {print $NF}' "$lifeExpectancyfile")
     echo "$lifeExpectancy"
 }
-
+# exportDataAnalytics
 
 functionName=$1
 username=$2
@@ -255,14 +275,18 @@ case $functionName in
         updateProfile "$@"
         ;;
     exportUserData)
-        exportUserData
+        exportUserData "$@"
         ;;
     exportDataAnalytics)
-        exportDataAnalytics
+        exportDataAnalytics "$@"
         ;;
     getCountryLifeExpectancy)
         getCountryLifeExpectancy "$@"
         ;;
+    getUsersData)
+        getUsersData
+        ;;
+
     *)
         echo "Invalid function name. Please try again."
         ;;
