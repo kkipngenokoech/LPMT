@@ -114,6 +114,7 @@ public class LPMT {
                         System.out.println(Design.padMessage(Design.formatMessage("Login successful, welcome "+username, Design.GREEN_COLOR),50));
                         System.out.print(Design.formatMessage("Redirecting to dashboard", Design.YELLOW_COLOR));
                         printLoadingDots(5);
+                        System.out.println(role);
                             if (role.equals("admin")){
                                 admin.callAdminMenu();
                             } else {

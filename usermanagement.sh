@@ -192,14 +192,30 @@ updateProfile(){
 
 exportUserData(){
     local patientfile="patientdata.csv"
-    cat "$patientfile"
-    // I want to aecho the headers to the text file
-    echo "Username:Password:Role:UUID:FirstName:LastName:Email:DateOfInfection:OnMedication:StartDateOfMedication:DOB:Country" > "$patientfile"
-    // I want to append data in user txt to patientdata.csv
+    local userFile="user.txt"  # Assuming userFile is defined somewhere in your script
+    echo "Exporting user data..."
+    # Echo the headers to the text file
+    echo "UUID,Username,Password,Role,FirstName,LastName,Email,DateOfInfection,OnMedication,StartDateOfMedication,DOB,Country,Timezone" > "$patientfile"
 
-    cat "$userFile" >> "$patientfile"
+    # Read each line from userFile
+    while IFS= read -r line; do
+        # Extract each field one by one
+        uuid=$(echo "$line" | cut -d':' -f1)
+        username=$(echo "$line" | cut -d':' -f2)
+        password=$(echo "$line" | cut -d':' -f3)
+        role=$(echo "$line" | cut -d':' -f4)
+        firstName=$(echo "$line" | cut -d':' -f5)
+        lastName=$(echo "$line" | cut -d':' -f6)
+        email=$(echo "$line" | cut -d':' -f7)
+        dateofinfection=$(echo "$line" | cut -d':' -f8-10)  # Extract dateofinfection with two colons
+        onMedication=$(echo "$line" | cut -d':' -f11)
+        starDateofMedication=$(echo "$line" | cut -d':' -f12-14)
+        dob=$(echo "$line" | cut -d':' -f15-17)  # Extract dob with two colons
+        country=$(echo "$line" | cut -d':' -f18)
+        # Reconstruct the line with commas, preserving the timezone field
+        echo "$uuid,$username,$password,$role,$firstName,$lastName,$email,$dateofinfection,$onMedication,$starDateofMedication,$dob,$country,$timezone" >> "$patientfile"
+    done < "$userFile"
 }
-
 exportDataAnalytics(){
     local dataAnalyticsfile="dataanalytics.csv"
     touch "$dataAnalyticsfile"
