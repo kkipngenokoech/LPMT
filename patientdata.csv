@@ -1,0 +1,21 @@
+Username:Password:Role:UUID:FirstName:LastName:Email:DateOfInfection:OnMedication:StartDateOfMedication:DOB:Country
+admin:3fa71c4c7680d73031d8af3934eb13110580f99825f4b56ce736691b5889cada  -:admin:=826723f0-4114-4f41-8773-6545bbe8d7ca:wefd:werf:retg:Sat Feb 23 00:00:00 CAT 2002:true:Fri Feb 23 00:00:00 CAT 2323:Sun Nov 23 00:00:00 CAT 2324:werf
+username:1234:patient:=9c70b4ed-c1ea-4922-9522-de81c4556a29:first name:last name:email:Thu Dec 12 00:00:00 CAT 2002:true:Thu Dec 12 00:00:00 CAT 2002:Thu Dec 12 00:00:00 CAT 2002:country
+patient1:a883dafc480d466ee04e0d6da986bd78eb1fdd2178d04693723da3a8f95d42f4  -:patient:=af2a1f9b-289a-4139-8aa0-4627660edbce:first name:last name:email:Tue Jan 01 00:00:00 CAT 2002:true:Thu Dec 12 00:00:00 CAT 2002:Tue Jan 01 00:00:00 CAT 2002:country
+kakai:a883dafc480d466ee04e0d6da986bd78eb1fdd2178d04693723da3a8f95d42f4  -:patient:=46b467da-4a3d-4a5a-b0b1-8572be3bbc02:john:kakai:kakak:Thu Apr 23 00:00:00 CAT 2020:true:Fri Apr 23 00:00:00 CAT 2021:Sat Jan 01 00:00:00 CAT 2000:kenmya
+kip:a883dafc480d466ee04e0d6da986bd78eb1fdd2178d04693723da3a8f95d42f4  -:patient:=105ad41d-233d-4d6e-bd41-35f803852029:Kipngeno:Koech:kipngeno:Wed Dec 05 00:00:00 CAT 2012:false:null:Wed Dec 09 00:00:00 CAT 1998:kenya
+Eleanor:a883dafc480d466ee04e0d6da986bd78eb1fdd2178d04693723da3a8f95d42f4  -:patient:=87c19aec-3f30-41b1-819a-0afe8d1287d8:Elean:Chep:elenchep:Sat Dec 09 00:00:00 CAT 2000:true:Thu Sep 09 00:00:00 CAT 2010:Mon Dec 08 00:00:00 CAT 1997:Senegal
+test:a883dafc480d466ee04e0d6da986bd78eb1fdd2178d04693723da3a8f95d42f4  -:patient:=e7f8da67-8a30-44b0-ba31-e81de579e04c:trfd:dsc:edfc:Wed Jan 01 00:00:00 CAT 2020:true:Wed Jan 01 00:00:00 CAT 2020:Sat Jan 01 00:00:00 CAT 2000:ewdhg
+Eleanor:a883dafc480d466ee04e0d6da986bd78eb1fdd2178d04693723da3a8f95d42f4  -:patient:=f0454352-a351-4232-8215-025ccc27cdad:Elen:Chep:elenchep:Tue Apr 07 00:00:00 CAT 2020:true:Thu Sep 07 00:00:00 CAT 2023:Fri Jul 09 00:00:00 CAT 1999:Camerron
+test:patient:=3d2f43c2-9e3c-4b76-912b-2faa04d0acbc
+user x:patient:=6458e07e-0a37-458a-9fe9-a22319a1080e
+new user:patient:=f34c0152-24af-44a8-9a20-ffa6b0ab3d3f
+wrd:patient:=234b576c-e7f2-4f4f-9c49-581dbc356a76
+test uuid:admin:=a63216ed-8ab1-4ec6-a7bd-5f167964deff
+admin great:admin:=a247403e-fcab-4aa8-8e9b-08d5d4b28ec8
+admin small:admin:=34bc65c2-ab13-4906-ba86-7d99bb356ee3
+username:admin:=6cb2a863-9f3d-4120-a74d-7f81fd84a2d5
+2:patient:=30d5221c-380d-4fc4-b518-8a0215a5e5ac
+jhgfds:admin:=869fc553-6934-4a3f-b417-7a1d9b9d3280
+fcvsdvc:admin:=54fd6b20-29e9-4a5f-9a3e-93374bbf840e
+=99e8e700-12da-41bf-a0e5-2db210d98d9f:kjdfnc:admin
