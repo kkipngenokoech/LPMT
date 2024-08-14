@@ -145,6 +145,10 @@ public class Patient{
             String dobInput = scanner.nextLine();
             try {
                 dob = dateFormat.parse(dobInput);
+                int future = checkDate(dob);
+                if (future == 1) {
+                    System.out.println(Design.formatMessage("Date of birth cannot be in the future, please enter a valid date.", Design.RED_COLOR));
+                } else
                 validDOB = true;
             } catch (ParseException e) {
                 System.out.println(Design.formatMessage("Invalid date format. Please enter the date in yyyy-MM-dd format.", Design.RED_COLOR));
@@ -156,7 +160,16 @@ public class Patient{
             String doiInput = scanner.nextLine();
             try {
                 dateofinfection = dateFormat.parse(doiInput);
-                validDOI = true;
+                if(dateofinfection.after(new Date())) {
+                    System.out.println(Design.formatMessage("Date of infection cannot be in the future. Please enter a valid date.", Design.RED_COLOR));
+                } else {
+                int compare = compareDOItoDOB(dob, dateofinfection);
+                if (compare == 1) {
+                    System.out.println(Design.formatMessage("Date of infection cannot be before date of birth:"+ dob +"Please enter a valid date.", Design.RED_COLOR));
+                } else {
+                    validDOI = true;
+                }
+            }
             } catch (ParseException e) {
                 System.out.println(Design.formatMessage("Invalid date format. Please enter the date in yyyy-MM-dd format.", Design.RED_COLOR));
             }
@@ -173,12 +186,24 @@ public class Patient{
             }
         }
         if (onMedication) {
-            System.out.print(Design.formatInputMessage("Please enter the start date of your medication (yyyy-MM-dd): "));
-            String medStartDateInput = scanner.nextLine();
-            try {
-                starDateofMedication = dateFormat.parse(medStartDateInput);
-            } catch (ParseException e) {
-                System.out.println(Design.formatMessage("Invalid date format. Please enter the date in yyyy-MM-dd format.", Design.RED_COLOR));
+            boolean checkdateStatus = false;
+            while (!checkdateStatus){
+                System.out.print(Design.formatInputMessage("Please enter the start date of your medication (yyyy-MM-dd): "));
+                String medStartDateInput = scanner.nextLine();
+                try {
+                    starDateofMedication = dateFormat.parse(medStartDateInput);
+                    if(starDateofMedication.after(new Date())) {
+                        System.out.println(Design.formatMessage("Start date of medication cannot be in the future. Please enter a valid date.", Design.RED_COLOR));
+                    }
+                    // date cannot be before date of infection
+                    if(starDateofMedication.before(dateofinfection)) {
+                        System.out.println(Design.formatMessage("Start date of medication cannot be before date of infection. Please enter a valid date.", Design.RED_COLOR));
+                    } else {
+                        checkdateStatus = true;
+                    }
+                } catch (ParseException e) {
+                    System.out.println(Design.formatMessage("Invalid date format. Please enter the date in yyyy-MM-dd format.", Design.RED_COLOR));
+                }
             }
         } else {
             starDateofMedication = null;
@@ -246,12 +271,18 @@ public class Patient{
                     while(!correctFormat){
                         try {
                             dob = dateFormat.parse(dateofbirth);
-                            correctFormat = true;
+                            int futureDate = checkDate(dob);
+                            if (futureDate == 1) {
+                                System.out.print(Design.formatMessage("Date of birth cannot be in the future, please enter a valid date:", Design.RED_COLOR));
+                                dateofbirth = System.console().readLine();
+                            } else {
+                                correctFormat = true;
+                            }
 
                         } catch (ParseException e) {
                             System.out.print(Design.formatMessage("Invalid date format, please enter the date in yyyy-MM-dd format:", Design.RED_COLOR));
                             dateofbirth = System.console().readLine();
-                        }
+                        }            
                     }
                     break;
                 case 7:
@@ -409,6 +440,34 @@ public class Patient{
         remainingLifespan = Math.max(0, remainingLifespan);
         // Print the calculated remaining lifespan
         return remainingLifespan;
+    }
+
+    public int checkDate(Date dob2) {
+       // date should not be in the future
+        Calendar dobCalendar = Calendar.getInstance();
+        dobCalendar.setTime(dob2);
+        int birthYear = dobCalendar.get(Calendar.YEAR);
+        Calendar currentCalendar = Calendar.getInstance();
+        int currentYear = currentCalendar.get(Calendar.YEAR);
+        if (birthYear > currentYear) {
+            return 1;
+        }
+        return 0;
+       
+    }
+
+    public int compareDOItoDOB(Date dob, Date dateofinfection) {
+        // date of infection should be greater than date of birth
+        Calendar dobCalendar = Calendar.getInstance();
+        dobCalendar.setTime(dob);
+        int birthYear = dobCalendar.get(Calendar.YEAR);
+        Calendar doiCalendar = Calendar.getInstance();
+        doiCalendar.setTime(dateofinfection);
+        int infectionYear = doiCalendar.get(Calendar.YEAR);
+        if (infectionYear < birthYear) {
+            return 1;
+        }
+        return 0;
     }
 
 }

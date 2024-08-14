@@ -2,7 +2,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LPMT {
+public class LPMT {  
     static String uuid;
     static String username;
     static char[] password;
