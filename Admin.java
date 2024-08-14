@@ -119,8 +119,8 @@ public class Admin {
             System.out.println(Design.padMessage(Design.formatMessage("Please select an option: ",Design.GREEN_COLOR), 50));
             System.out.println(Design.createBorder(50));
             System.out.println("1. Create a new user");
-            System.out.println("2. Export data analytics");
-            System.out.println("3. Export patient data");
+            System.out.println("2. Export patient data");
+            System.out.println("3. Export data analytics");
             System.out.println(Design.padMessage(Design.formatMessage("4. LOGOUT",Design.YELLOW_COLOR)+Design.formatMessage("5. EXIT", Design.RED_COLOR), 50));
             System.out.print(Design.formatInputMessage("Please enter your choice: "));
             int choice = -1;
